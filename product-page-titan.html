@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TITAN HOODIE | MUDÈRA</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <style>
+        :root { --bg-dark: #080808; --text-light: #ffffff; --text-muted: #777777; --accent-gold: #D4AF37; --border-color: #111111; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg-dark); color: var(--text-light); font-family: 'Montserrat', sans-serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+        header { position: fixed; top: 0; left: 0; width: 100%; z-index: 100; background: rgba(8, 8, 8, 0.85); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
+        .nav-container { max-width: 1400px; margin: 0 auto; padding: 20px 4%; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+        .menu-left a, .menu-right a { color: var(--text-light); text-decoration: none; font-size: 0.75rem; letter-spacing: 3px; font-weight: 300; transition: color 0.3s; }
+        .menu-left a:hover, .menu-right a:hover { color: var(--accent-gold); }
+        .menu-right { text-align: right; cursor: pointer; }
+        .logo-center img { height: auto; width: 120px; }
+
+        .product-layout { display: grid; grid-template-columns: 1.2fr 1fr; max-width: 1600px; margin: 100px auto 0; min-height: 90vh; }
+        .product-gallery { padding: 0 4%; display: flex; flex-direction: column; gap: 20px; }
+        .image-wrapper { background: #0d0d0d; border: 1px solid rgba(255, 255, 255, 0.02); width: 100%; }
+        .image-wrapper img { width: 100%; display: block; transition: opacity 0.3s ease; }
+        
+        .product-info { padding: 40px 8% 100px 4%; position: sticky; top: 100px; height: fit-content; }
+        .tagline { font-size: 0.65rem; color: var(--accent-gold); letter-spacing: 4px; margin-bottom: 15px; display: block; }
+        h1 { font-family: 'Cinzel', serif; font-size: 2.5rem; font-weight: 400; letter-spacing: 4px; margin-bottom: 20px; }
+        .price { font-size: 1.2rem; color: var(--text-light); letter-spacing: 2px; margin-bottom: 40px; font-weight: 300; }
+        .description { color: var(--text-muted); font-size: 0.85rem; line-height: 1.8; margin-bottom: 40px; font-weight: 300; }
+
+        .selector-label { font-size: 0.7rem; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 15px; display: block; }
+        
+        .size-chips { display: flex; gap: 15px; margin-bottom: 50px; }
+        .size-chips button { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 12px 20px; cursor: pointer; font-family: 'Montserrat'; font-size: 0.8rem; letter-spacing: 2px; transition: all 0.3s; }
+        .size-chips button:hover { border-color: white; }
+        .size-chips button.active { background: white; color: black; font-weight: 500; }
+
+        .add-btn { display: block; position: relative; z-index: 5; width: 100%; background: var(--accent-gold); color: black; border: none; padding: 20px; font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 4px; cursor: pointer; transition: all 0.4s ease; }
+        .add-btn:hover { background: #e3be4a; box-shadow: 0 0 20px rgba(214, 175, 55, 0.2); }
+
+        .checkout-direct-btn { display: block; text-align: center; text-decoration: none; width: 100%; background: transparent; color: var(--text-light); border: 1px solid rgba(255, 255, 255, 0.15); padding: 18px; font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 4px; margin-top: 15px; transition: all 0.4s ease; }
+        .checkout-direct-btn:hover { border-color: var(--text-light); background: rgba(255, 255, 255, 0.05); }
+
+        #side-cart { position: fixed; top: 0; right: 0; width: 400px; height: 100vh; background: #0a0a0a; border-left: 1px solid var(--border-color); z-index: 1000; transform: translateX(100%); display: flex; flex-direction: column; padding: 30px; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 20px; }
+        .cart-header h2 { font-family: 'Cinzel', serif; font-size: 1.2rem; letter-spacing: 3px; }
+        .close-cart { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        #cart-items-container { flex-grow: 1; overflow-y: auto; }
+        .cart-item { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; }
+        .cart-item img { width: 70px; height: 90px; object-fit: cover; }
+        .cart-item h4 { font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 5px; }
+        .cart-item p { font-size: 0.7rem; color: var(--text-muted); }
+        .cart-item button { background: none; border: none; color: var(--text-muted); font-size: 0.6rem; letter-spacing: 1px; cursor: pointer; margin-top: 5px; text-decoration: underline; }
+        .cart-footer { border-top: 1px solid var(--border-color); padding-top: 20px; }
+        .cart-total-row { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 0.9rem; letter-spacing: 2px;}
+        .checkout-btn { width: 100%; background: white; color: black; text-align: center; text-decoration: none; padding: 15px; display: block; font-family: 'Cinzel', serif; letter-spacing: 3px; font-size: 0.8rem; }
+
+        @media (max-width: 900px) { .product-layout { grid-template-columns: 1fr; } .product-info { position: static; padding: 40px 4%; } #side-cart { width: 100%; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="menu-left"><a href="index.html">RETURN</a></div>
+            <div class="logo-center"><a href="index.html"><img src="img/logo.png" alt="MUDÈRA"></a></div>
+            <div class="menu-right"><a id="cart-trigger">CART (<span id="cart-count">0</span>)</a></div>
+        </div>
+    </header>
+
+    <main class="product-layout">
+        <div class="product-gallery img-animate">
+            <div class="image-wrapper">
+                <img id="main-front-img" src="img/titan-front.png" alt="Titan Hoodie Front">
+            </div>
+            <div class="image-wrapper">
+                <img id="main-back-img" src="img/titan-back.png" alt="Titan Hoodie Back">
+            </div>
+        </div>
+
+        <div class="product-info">
+            <span class="tagline p-animate">SERIES 01 // DROP 01</span>
+            <h1 class="p-animate">THE TITAN HOODIE</h1>
+            <p class="price p-animate">₹5,200</p>
+            
+            <p class="description p-animate">
+                An uncompromised bold profile. The Titan Hoodie features an exaggerated oversized drop-shoulder canvas crafted from ultra-heavyweight brushback cotton. Built to command space.
+            </p>
+
+            <div class="p-animate">
+                <span class="selector-label">SIZE</span>
+                <div class="size-chips">
+                    <button>S</button>
+                    <button class="active">M</button>
+                    <button>L</button>
+                    <button>XL</button>
+                </div>
+            </div>
+
+            <button id="add-to-atelier" class="add-btn p-animate" onclick="addToCart('TITAN OVERSIZED', 5200, document.getElementById('main-front-img').src)">
+                ADD TO ATELIER
+            </button>
+            
+            <a href="checkout.html" class="checkout-direct-btn p-animate">
+                PROCEED TO CHECKOUT
+            </a>
+        </div>
+    </main>
+
+    <div id="side-cart">
+        <div class="cart-header">
+            <h2>YOUR ATELIER</h2>
+            <button class="close-cart">×</button>
+        </div>
+        <div id="cart-items-container"></div>
+        <div class="cart-footer">
+            <div class="cart-total-row">
+                <span>SUBTOTAL</span>
+                <span id="cart-total">₹0</span>
+            </div>
+            <a href="checkout.html" class="checkout-btn">PROCEED TO SECURE CHECKOUT</a>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+        // Interactive UI Handles
+        const sideCart = document.getElementById('side-cart');
+        const cartTrigger = document.getElementById('cart-trigger');
+        const closeCart = document.querySelector('.close-cart');
+        const addBtn = document.getElementById('add-to-atelier');
+
+        // Drawer Animations via GSAP
+        if(cartTrigger) {
+            cartTrigger.addEventListener('click', () => gsap.to(sideCart, { x: '0%', duration: 0.5, ease: 'power4.out' }));
+        }
+        if(closeCart) {
+            closeCart.addEventListener('click', () => gsap.to(sideCart, { x: '100%', duration: 0.5, ease: 'power4.out' }));
+        }
+        if(addBtn) {
+            addBtn.addEventListener('click', () => {
+                setTimeout(() => {
+                    gsap.to(sideCart, { x: '0%', duration: 0.5, ease: 'power4.out' });
+                }, 300);
+            });
+        }
+
+        // Size Selector
+        document.querySelectorAll('.size-chips button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.size-chips button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

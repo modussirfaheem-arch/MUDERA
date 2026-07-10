@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUDÈRA | Haute Couture</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- GSAP Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <style>
+        :root { --bg-dark: #080808; --text-light: #ffffff; --text-muted: #777777; --accent-gold: #D4AF37; --border-color: #111111; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; background-color: var(--bg-dark); }
+        body { background-color: var(--bg-dark); color: var(--text-light); font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
+
+        header { position: fixed; top: 0; left: 0; width: 100%; z-index: 100; background: rgba(8, 8, 8, 0.85); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.03); opacity: 0; transform: translateY(-20px); }
+        .nav-container { max-width: 1400px; margin: 0 auto; padding: 20px 4%; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+        .menu-left a, .menu-right a { color: var(--text-light); text-decoration: none; font-size: 0.75rem; letter-spacing: 3px; font-weight: 300; transition: color 0.3s; }
+        .menu-left a:hover, .menu-right a:hover { color: var(--accent-gold); }
+        .menu-right { text-align: right; cursor: pointer; }
+        .logo-center img { display: block; height: auto; width: 120px; transition: transform 0.4s ease; }
+        
+        .hero { height: 100vh; width: 100%; display: flex; justify-content: center; align-items: center; text-align: center; background: radial-gradient(circle at center, #111111 0%, var(--bg-dark) 70%); }
+        .hero-content .sub-title { font-size: 0.8rem; letter-spacing: 6px; color: var(--text-muted); margin-bottom: 15px; display: block; opacity: 0; transform: translateY(20px); }
+        .hero-content h1 { font-family: 'Cinzel', serif; font-size: clamp(3rem, 8vw, 6.5rem); letter-spacing: 15px; margin-bottom: 40px; opacity: 0; transform: translateY(30px); }
+        .luxury-button { display: inline-block; color: var(--text-light); text-decoration: none; font-family: 'Cinzel', serif; font-size: 0.8rem; letter-spacing: 4px; padding: 15px 40px; border: 1px solid rgba(255, 255, 255, 0.1); opacity: 0; transform: translateY(20px); transition: all 0.4s; }
+        .luxury-button:hover { border-color: var(--accent-gold); color: #000; background: var(--accent-gold); }
+
+        .product-reveal { padding: 140px 4%; max-width: 1400px; margin: 0 auto; }
+        .product-header { text-align: center; margin-bottom: 80px; }
+        .product-header span { font-size: 0.75rem; color: var(--accent-gold); letter-spacing: 4px; display: block; margin-bottom: 10px; }
+        .product-header h2 { font-family: 'Cinzel', serif; font-size: 2rem; letter-spacing: 6px; }
+
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; }
+        .product-card { display: block; position: relative; background: #0d0d0d; border: 1px solid rgba(255, 255, 255, 0.02); aspect-ratio: 3/4; overflow: hidden; }
+        .product-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s; }
+        .product-card:hover img { transform: scale(1.04); }
+        
+        .product-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px; background: linear-gradient(to top, rgba(8,8,8,0.9) 0%, rgba(8,8,8,0) 100%); }
+        .view-tag { font-size: 0.65rem; color: var(--accent-gold); letter-spacing: 2px; display: block; margin-bottom: 8px; opacity: 0; transition: opacity 0.4s; }
+        .product-card:hover .view-tag { opacity: 1; }
+        
+        footer { padding: 80px 4%; text-align: center; border-top: 1px solid var(--border-color); }
+        .footer-links { display: flex; justify-content: center; gap: 40px; margin-bottom: 30px; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; }
+    </style>
+</head>
+<body>
+
+    <header id="mainHeader">
+        <div class="nav-container">
+            <div class="menu-left"><a href="index.html">COLLECTIONS</a></div>
+            <div class="logo-center"><a href="index.html"><img src="img/logo.png" alt="MUDÈRA"></a></div>
+            <div class="menu-right"><a href="checkout.html">CART (<span id="cart-count">0</span>)</a></div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <span class="sub-title" id="heroSub">ESTABLISHED 2026</span>
+            <h1 id="heroTitle">MUDÈRA</h1>
+            <a href="#drop-02" class="luxury-button" id="heroBtn">EXPLORE THE ARCHITECT</a>
+        </div>
+    </section>
+
+    <!-- Content Sections -->
+    <section id="drop-02" class="product-reveal scroll-section">
+        <div class="product-header">
+            <span>SERIES 01 // DROP 02</span>
+            <h2>THE ARCHITECT SERIES</h2>
+        </div>
+        <div class="single-showcase-container">
+            <a href="product-page-arcti.html" class="product-card project-card-reveal">
+                <img src="img/hoodie-front-black.png" alt="Architect Hoodie">
+                <div class="product-overlay">
+                    <span class="view-tag">SERIES 01 // DROP 02</span>
+                    <p style="font-family: 'Cinzel', serif; letter-spacing: 3px;">ARCHITECT OF MIND</p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <section id="drop-01" class="product-reveal scroll-section">
+        <div class="product-header">
+            <span>SERIES 01 // DROP 01</span>
+            <h2>THE TITAN SERIES</h2>
+        </div>
+        <div class="product-grid">
+            <a href="product-page-titan.html" class="product-card project-card-reveal">
+                <img src="img/titan-front.png" alt="Titan Hoodie">
+                <div class="product-overlay">
+                    <span class="view-tag">SERIES 01 // DROP 01</span>
+                    <p style="font-family: 'Cinzel', serif; letter-spacing: 3px;">TITAN OVERSIZED</p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#">INSTAGRAM</a>
+            <a href="#">TERMS</a>
+            <a href="#">CONTACT</a>
+        </div>
+        <p class="copyright">© 2026 MUDÈRA ATELIER</p>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHECKOUT | MUDÈRA</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <style>
+        :root { --bg-color: #080808; --panel-bg: #111111; --accent-gold: #D4AF37; --border-dark: #222222; --text-main: #ffffff; --text-muted: #888888; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Montserrat', sans-serif; min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow-x: hidden; }
+
+        .checkout-container { width: 100%; max-width: 1200px; padding: 60px 4%; display: grid; grid-template-columns: 1fr 420px; gap: 60px; opacity: 0; }
+        h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 3px; font-weight: 400; }
+        h2 { font-size: 1.8rem; margin-bottom: 40px; position: relative; display: inline-block; }
+        h2::after { content: ''; position: absolute; bottom: -10px; left: 0; width: 40px; height: 1px; background: var(--accent-gold); }
+
+        .checkout-form { display: flex; flex-direction: column; }
+        .input-group { position: relative; margin-bottom: 25px; width: 100%; }
+        .input-row { display: flex; gap: 20px; }
+        .checkout-form input { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border-dark); padding: 15px 0; color: var(--text-main); font-family: 'Montserrat', sans-serif; font-size: 0.9rem; letter-spacing: 1px; outline: none; transition: border-color 0.4s ease; }
+        .checkout-form input:focus { border-bottom-color: var(--accent-gold); }
+        .input-group label { position: absolute; left: 0; top: 15px; color: var(--text-muted); font-size: 0.8rem; letter-spacing: 1.5px; pointer-events: none; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+
+        .checkout-form input:focus ~ label, .checkout-form input:not(:placeholder-shown) ~ label { top: -10px; font-size: 0.7rem; color: var(--accent-gold); }
+        .luxury-button { background: transparent; border: 1px solid var(--accent-gold); color: var(--text-main); padding: 20px; font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 3px; cursor: pointer; width: 100%; margin-top: 20px; position: relative; z-index: 1; overflow: hidden; transition: color 0.4s ease; }
+        .luxury-button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: var(--accent-gold); transition: left 0.4s cubic-bezier(0.77, 0, 0.175, 1); z-index: -1; }
+        .luxury-button:hover { color: #000; }
+        .luxury-button:hover::before { left: 0; }
+
+        .order-summary { background: var(--panel-bg); padding: 40px; border: 1px solid rgba(214, 175, 55, 0.15); height: fit-content; box-shadow: 0 20px 40px rgba(0,0,0,0.5); position: relative; }
+        .cart-item-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 15px; letter-spacing: 1px; color: #dddddd; }
+        .summary-divider { border: 0; border-top: 1px solid var(--border-dark); margin: 25px 0; }
+        .total-row { display: flex; justify-content: space-between; color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 1.1rem; letter-spacing: 2px; font-weight: 600; }
+        .empty-cart-msg { color: var(--text-muted); font-size: 0.85rem; letter-spacing: 1px; font-style: italic; }
+
+        @media (max-width: 900px) { .checkout-container { grid-template-columns: 1fr; gap: 40px; padding: 40px 20px; } .order-summary { order: -1; } }
+    </style>
+</head>
+<body>
+
+    <div class="checkout-container" id="checkoutContainer">
+        <div class="checkout-form">
+            <h2>SHIPPING DETAILS</h2>
+            <div class="input-group">
+                <input type="text" id="name" placeholder=" " required autocomplete="off">
+                <label for="name">FULL NAME</label>
+            </div>
+            <div class="input-group">
+                <input type="email" id="email" placeholder=" " required autocomplete="off">
+                <label for="email">EMAIL ADDRESS</label>
+            </div>
+            <div class="input-group">
+                <input type="text" id="address" placeholder=" " required autocomplete="off">
+                <label for="address">SHIPPING ADDRESS</label>
+            </div>
+            <div class="input-row">
+                <div class="input-group">
+                    <input type="text" id="city" placeholder=" " required autocomplete="off">
+                    <label for="city">CITY</label>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="zip" placeholder=" " required autocomplete="off">
+                    <label for="zip">POSTAL CODE</label>
+                </div>
+            </div>
+            <!-- Updated to call validation function -->
+            <button class="luxury-button" id="submitBtn" onclick="validateCheckout()">COMPLETE PURCHASE</button>
+        </div>
+
+        <div class="order-summary">
+            <h3 style="margin-bottom: 30px;">YOUR ORDER</h3>
+            <div id="checkout-summary-list"></div>
+            <hr class="summary-divider">
+            <div class="total-row">
+                <span>TOTAL</span>
+                <span id="total-price-val">₹0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button id="topBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+        style="position:fixed; bottom:30px; right:30px; background:transparent; border:1px solid #D4AF37; color:#D4AF37; padding:15px; cursor:pointer; display:none; z-index:999;">↑</button>
+
+    <!-- Load the Global Script -->
+    <script src="scripts.js"></script>
+
+    <script>
+        // Form Validation Logic
+        window.validateCheckout = function() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            
+            if (name === "" || email === "") {
+                alert("Please fill in your shipping details.");
+            } else {
+                alert("Order Placed Successfully!");
+                localStorage.removeItem('mudera_cart'); // Clear cart
+                window.location.href = "index.html";
+            }
+        };
+
+        // GSAP Animations
+        window.addEventListener('DOMContentLoaded', () => {
+            const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+            tl.to("#checkoutContainer", { opacity: 1, duration: 0.5 })
+              .from(".input-group, h2, #submitBtn", { opacity: 0, y: 20, stagger: 0.08, duration: 0.8 }, "-=0.3")
+              .from(".order-summary", { opacity: 0, x: 40, duration: 1 }, "-=0.8");
+        });
+    </script>
+</body>
+</html>
